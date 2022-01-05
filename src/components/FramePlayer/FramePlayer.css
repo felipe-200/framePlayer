@@ -15,6 +15,7 @@
   align-items: center;
   margin-bottom: 5px;
   flex-direction: column;
+  padding: 7px;
 }
 .player_control button{
   margin: 0 5px 0 5px;

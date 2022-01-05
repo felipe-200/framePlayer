@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react"
 import './FramePlayer.css'
-
+import { useFormatSeconds } from '../../hooks/useFormatSeconds'
 interface framePlayerProps {
   frames: Array<string>,
   fps: number
@@ -8,72 +8,103 @@ interface framePlayerProps {
 export const FramePlayer = (props: framePlayerProps) => {
   const arrayImg = props.frames
   const sizeArrayImg = arrayImg.length - 1
-  const [nameButton, setNameButton] = useState<'Play' | 'Pause'>('Play')
-  const [countImg, setCountImg] = useState(0)
-  const [intervalId, setIntervalId] = useState<any>()
-
-  const [durationTotalSlide, setDurationTotalSlide] = useState<any>()
+  // 
+  const [numberFrame, setNumberFrame] = useState<number>(0)
+  const [countTotalSecondsFrames, setCountSecondTotalSecondsFrames] = useState<number>(0)
+  const [durationTotalSlide, setDurationTotalSlide] = useState<number>(0)
   const [durationFrameSecond, setDurationFrameSecond] = useState<any>()
-
-  const converterTimer = (totalTimer: number) => {
-    if (totalTimer < 60) {
-      return `00:${totalTimer}`
-    } else {
-      let newTime = totalTimer / 60
-      let timeString = String(newTime).split('.')
-      return `${timeString[0]}:${Math.round(Number(timeString[1]))}`
-    }
-  }
+  const [intervalCountTimeTotalFramesID, setIntervalCountTimeTotalFramesID] = useState<any>()
+  const [intervalCountSecondsFramesID, setIntervalCountSecondsFramesID] = useState<any>()
+  const [range, setRange] = useState<number>(0)
+  const [nameButtonHandler, setNameButtonHandler] = useState<'Play' | 'Pause'>('Play')
+  // 
+  let framesCount = numberFrame
+  let secondsCount = countTotalSecondsFrames
+  // 
+  const countSecondsFrame = useFormatSeconds(countTotalSecondsFrames)
+  const totalDurationFrames = useFormatSeconds(durationTotalSlide)
 
   useEffect(() => {
     const durationTotal = sizeArrayImg / props.fps
-    setDurationTotalSlide(converterTimer(durationTotal))
+    setDurationTotalSlide(durationTotal)
     const durationInSeconds = durationTotal / sizeArrayImg
     setDurationFrameSecond(durationInSeconds * 1000)
   }, [props.fps, sizeArrayImg])
-  let countQtdImg = countImg
-  const playerCount = () => {
-    const counter = setInterval(() => {
-      if (sizeArrayImg === countQtdImg + 1) {
-        clearInterval(counter)
-        setNameButton('Play')
+  const playerStartCount = () => {
+    // start count Frames
+    const countSecondsFrames = setInterval(() => {
+      if (sizeArrayImg === framesCount) {
+        setNameButtonHandler('Play')
+        clearInterval(countSecondsFrames)
+        return
       }
-      countQtdImg += 1
-      setCountImg(oldValue => oldValue + 1)
+      framesCount += 1
+      setNumberFrame(oldValue => oldValue + 1)
     }, durationFrameSecond)
-    setIntervalId(counter)
+    // start count Seconds
+    const countTimeTotalFrames = setInterval(() => {
+      if (secondsCount === durationTotalSlide) {
+        clearInterval(countTimeTotalFrames)
+        return
+      }
+      secondsCount += 1
+      setCountSecondTotalSecondsFrames(oldValue => oldValue + 1)
+    }, 1000)
+    //
+    setIntervalCountTimeTotalFramesID(countTimeTotalFrames)
+    setIntervalCountSecondsFramesID(countSecondsFrames)
   }
-  const stop = () => {
-    clearInterval(intervalId)
-    setNameButton('Play')
+  const handleRange = (ev: any) => {
+    // Slider
+    const valueIndexRange = Number(ev.target.value)
+    const compassRange = valueIndexRange / props.fps
+    setRange(valueIndexRange)
+    setNumberFrame(valueIndexRange)
+    setCountSecondTotalSecondsFrames(compassRange)
   }
-  const play = () => {
-    if (countImg === sizeArrayImg) {
-      setCountImg(0)
+  const handlePlayFrame = () => {
+    if (nameButtonHandler === 'Play') {
+      if (numberFrame === sizeArrayImg) {
+        setNumberFrame(0)
+        setCountSecondTotalSecondsFrames(0)
+      }
+      playerStartCount()
+      setNameButtonHandler('Pause')
+      return
     }
-    playerCount()
-    setNameButton('Pause')
+    if (nameButtonHandler === 'Pause') {
+      clearInterval(intervalCountSecondsFramesID)
+      clearInterval(intervalCountTimeTotalFramesID)
+      setNameButtonHandler('Play')
+      return
+    }
   }
+  console.log({
+    sizeArrayImg,
+    numberFrame,
+    range,
+    countTotalSecondsFrames
+  })
+  useEffect(() => {
+    setRange(numberFrame)
+  }, [numberFrame])
   return (
     <div className="player_container">
       <h1>Frame Player</h1>
       <div className="player_content">
-        {/* <Player /> */}
-        <img width="500px" height="350px" src={arrayImg[countImg]} alt="Alguma Imagem" />
+        <img width="500px" height="350px" src={arrayImg[numberFrame]} alt="Alguma Imagem" />
         <div className="range_control">
           <div className="range_count">
-            <span>00:00</span>
-            <span>{durationTotalSlide}</span>
+            <span>{countSecondsFrame}</span>
+            <span>{totalDurationFrames}</span>
           </div>
           <div>
-            <input type="range" className="range" min="0" max={sizeArrayImg} value={countImg} readOnly />
+            <input type="range" onChange={handleRange} className="range" min="0" max={sizeArrayImg} value={range} />
           </div>
         </div>
       </div>
       <div className="player_control">
-        <button>Prev</button>
-        <button onClick={nameButton === 'Play' ? play : stop}>{nameButton}</button>
-        <button>Next</button>
+        <button onClick={handlePlayFrame}>{nameButtonHandler}</button>
       </div>
     </div>
   )
