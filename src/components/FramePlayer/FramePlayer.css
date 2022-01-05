@@ -1,0 +1,35 @@
+.player_container {
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.player_content {
+  width: 500px;
+  height: 400px;
+  color: white;
+  background-color: rgb(17, 17, 17);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 5px;
+  flex-direction: column;
+}
+.player_control button{
+  margin: 0 5px 0 5px;
+}
+.player_content .range_control {
+  margin-top: 5px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+}
+.player_content .range_control .range_count {
+  display: flex;
+  width: 100%;
+  justify-content: space-between;
+}
+.player_content .range_control .range {
+  width: 100%;
+}
