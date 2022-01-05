@@ -1,5 +1,6 @@
 .player_container {
   width: 100%;
+  height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -7,30 +8,38 @@
 }
 .player_content {
   width: 500px;
-  height: 400px;
-  color: white;
-  background-color: rgb(17, 17, 17);
+  height: 450px;
+  background-color: #181818;
   display: flex;
-  justify-content: center;
-  align-items: center;
+  /* justify-content: center; */
+  /* align-items: center; */
   margin-bottom: 5px;
   flex-direction: column;
   padding: 7px;
 }
-.player_control button{
-  margin: 0 5px 0 5px;
-}
-.player_content .range_control {
+.player_content .player_footer {
   margin-top: 5px;
   width: 100%;
   display: flex;
   flex-direction: column;
+  color: white;
+  
 }
-.player_content .range_control .range_count {
+.player_content .player_footer .range {
+  width: 100%;
+  background: #d3d3d3;
+  margin: 10px 0;
+}
+.player_content .player_footer .player_control {
   display: flex;
   width: 100%;
+  align-items: center;
   justify-content: space-between;
 }
-.player_content .range_control .range {
-  width: 100%;
+.player_control button{
+  border: 0;
+  background-color: transparent;
+  width: 40px;
+  margin-right: 5px;
+  color: white
 }

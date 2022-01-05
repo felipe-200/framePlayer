@@ -11,7 +11,7 @@ function App() {
     'https://portalfotografianapratica.com/wp-content/uploads/2019/09/miniatura-01-730x410.jpg'
   ]
   return (
-    <div className="App">
+    <div>
       <FramePlayer frames={imgs} fps={0.5} />
     </div>
   );

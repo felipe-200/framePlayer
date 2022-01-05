@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react"
 import './FramePlayer.css'
 import { useFormatSeconds } from '../../hooks/useFormatSeconds'
+import { IconPlay } from '../Icons/IconPlay'
+import { IconPause } from "../Icons/IconPause"
 interface framePlayerProps {
   frames: Array<string>,
   fps: number
@@ -23,7 +25,7 @@ export const FramePlayer = (props: framePlayerProps) => {
   // 
   const countSecondsFrame = useFormatSeconds(countTotalSecondsFrames)
   const totalDurationFrames = useFormatSeconds(durationTotalSlide)
-
+  // 
   useEffect(() => {
     const durationTotal = sizeArrayImg / props.fps
     setDurationTotalSlide(durationTotal)
@@ -79,33 +81,40 @@ export const FramePlayer = (props: framePlayerProps) => {
       return
     }
   }
+  useEffect(() => {
+    setRange(numberFrame)
+  }, [numberFrame])
   console.log({
     sizeArrayImg,
     numberFrame,
     range,
     countTotalSecondsFrames
   })
-  useEffect(() => {
-    setRange(numberFrame)
-  }, [numberFrame])
+  const Frame = () => {
+    return (
+      <img width="100%" height="350px" src={arrayImg[numberFrame]} alt="Alguma Imagem" />
+    )
+  }
   return (
     <div className="player_container">
-      <h1>Frame Player</h1>
       <div className="player_content">
-        <img width="500px" height="350px" src={arrayImg[numberFrame]} alt="Alguma Imagem" />
-        <div className="range_control">
-          <div className="range_count">
-            <span>{countSecondsFrame}</span>
-            <span>{totalDurationFrames}</span>
-          </div>
-          <div>
-            <input type="range" onChange={handleRange} className="range" min="0" max={sizeArrayImg} value={range} />
+        <Frame />
+        <div className="player_footer">
+          <input type="range" onChange={handleRange} className="range" min="0" max={sizeArrayImg} value={range} />
+          <div className="player_control">
+            <button onClick={handlePlayFrame}>
+              {nameButtonHandler === 'Pause' ? (
+                <span className="iconPause">{IconPause}</span>
+              ) : (
+                <span className="iconPlay">{IconPlay}</span>
+              )}
+            </button>
+            <span> {countSecondsFrame}  / {totalDurationFrames} </span>
           </div>
         </div>
+
       </div>
-      <div className="player_control">
-        <button onClick={handlePlayFrame}>{nameButtonHandler}</button>
-      </div>
+
     </div>
   )
 }
